@@ -203,6 +203,14 @@ FileStore.prototype.clear = function clear(fn) {
 
   var self = this;
 
+  if ('function' === typeof key) {
+
+    fn = key;
+    
+    key = null;
+
+  }
+
   fn = fn || noop;
 
   try {
