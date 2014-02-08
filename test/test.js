@@ -2,7 +2,7 @@ var assert = require('assert'),
   Cache = require('../'),
   cache;
 
-describe('cacheman-memory', function() {
+describe('cacheman-file', function() {
 
   before(function(done) {
     cache = new Cache({}, {});
