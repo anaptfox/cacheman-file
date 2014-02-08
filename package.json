@@ -1,0 +1,30 @@
+{
+  "name": "cacheman-memory",
+  "version": "0.0.1",
+  "description": "File caching library for Node.JS and also cache engine for cacheman",
+  "author": "Taron Foxworth <taronfoxworth@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/taronfoxworth/cacheman-file.git"
+  },
+  "keywords": [
+    "cache",
+    "file",
+    "caching",
+    "store",
+    "ttl",
+    "cacheman"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "dependencies": {
+    "lru-cache": "~2.3.x",
+    "fs-extra": "latest"
+  }
+}
