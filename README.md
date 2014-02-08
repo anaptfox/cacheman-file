@@ -1,4 +1,4 @@
-# cacheman-memory
+# cacheman-file
 
 [![Build Status](https://api.travis-ci.org/taronfoxworth/cacheman-file.png?branch=master)](https://travis-ci.org/taronfoxworth/cacheman-file)
 [![NPM version](https://badge.fury.io/js/cacheman-file.png)](http://badge.fury.io/js/cacheman-file)
@@ -8,13 +8,13 @@ File caching library for Node.JS and also cache engine for [cacheman](https://gi
 ## Instalation
 
 ``` bash
-$ npm install cacheman-memory
+$ npm install cacheman-file
 ```
 
 ## Usage
 
 ```javascript
-var CachemanFile = require('cacheman-memory');
+var CachemanFile = require('cacheman-file');
 var cache = new CachemanFile();
 
 // set the value
@@ -45,7 +45,7 @@ cache.set('my key', { foo: 'bar' }, function (error) {
 
 ### CachemanFile()
 
-Create `cacheman-memory` instance.
+Create `cacheman-file` instance.
 
 ```javascript
 var cache = new CachemanFile();
