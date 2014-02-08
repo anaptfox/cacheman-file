@@ -199,7 +199,7 @@ FileStore.prototype.del = function del(key, fn) {
  * @api public
  */
 
-FileStore.prototype.clear = function clear(prefix, fn) {
+FileStore.prototype.clear = function clear(fn) {
 
   var self = this;
 
