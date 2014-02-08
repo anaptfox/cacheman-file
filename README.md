@@ -1,9 +1,9 @@
 # cacheman-memory
 
-[![Build Status](https://travis-ci.org/cayasso/cacheman-memory.png?branch=master)](https://travis-ci.org/cayasso/cacheman-memory)
-[![NPM version](https://badge.fury.io/js/cacheman-memory.png)](http://badge.fury.io/js/cacheman-memory)
+[![Build Status](https://api.travis-ci.org/taronfoxworth/cacheman-file.png?branch=master)](https://travis-ci.org/taronfoxworth/cacheman-file)
+[![NPM version](https://badge.fury.io/js/cacheman-file.png)](http://badge.fury.io/js/cacheman-file)
 
-In-memory caching library for Node.JS and also cache engine for [cacheman](https://github.com/cayasso/cacheman).
+File caching library for Node.JS and also cache engine for [cacheman](https://github.com/cayasso/cacheman).
 
 ## Instalation
 
@@ -14,8 +14,8 @@ $ npm install cacheman-memory
 ## Usage
 
 ```javascript
-var CachemanMemory = require('cacheman-memory');
-var cache = new CachemanMemory();
+var CachemanFile = require('cacheman-memory');
+var cache = new CachemanFile();
 
 // set the value
 cache.set('my key', { foo: 'bar' }, function (error) {
@@ -43,12 +43,12 @@ cache.set('my key', { foo: 'bar' }, function (error) {
 
 ## API
 
-### CachemanMemory()
+### CachemanFile()
 
 Create `cacheman-memory` instance.
 
 ```javascript
-var cache = new CachemanMemory();
+var cache = new CachemanFile();
 ```
 
 ### cache.set(key, value, [ttl, [fn]])
@@ -115,7 +115,7 @@ $ make test
 
 (The MIT License)
 
-Copyright (c) 2013 Jonathan Brumley &lt;cayasso@gmail.com&gt;
+Copyright (c) 2013 Taron Foxworth &lt;taronfoxworth@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
