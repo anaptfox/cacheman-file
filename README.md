@@ -115,7 +115,7 @@ $ make test
 
 (The MIT License)
 
-Copyright (c) 2013 Taron Foxworth &lt;taronfoxworth@gmail.com&gt;
+Copyright (c) 2013 Taron Foxworth &lt;taronfoxworth@gmail.com&gt; , Jeremiah Harlan &lt;jeremiah.harlan@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
