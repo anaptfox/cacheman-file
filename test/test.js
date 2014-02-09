@@ -10,7 +10,7 @@ describe('cacheman-file', function() {
   });
 
   after(function(done) {
-    cache.clear();
+    cache.clear('test');
     done();
   });
 
@@ -93,7 +93,7 @@ describe('cacheman-file', function() {
       cache.get('test6', function(err, data) {
         if (err) return done(err);
         assert.equal(data, value);
-        cache.clear(function(err) {
+        cache.clear(null, function(err) {
           if (err) return done(err);
           cache.get('test6', function(err, data) {
             if (err) return done(err);
