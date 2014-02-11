@@ -45,13 +45,31 @@ FileStore.prototype.get = function get(key, fn) {
 
   var cacheFile = path.join(cwd, 'tmp', key + '.json');
 
-  if (!this.cache[key] || (this.cache[key] < Date.now())) {
+
+
+  if (fs.existsSync(cacheFile)) {
+
+    data = require(cacheFile);
+
+
+
+    this.cache[key] = data.expire;
+
+  } else {
 
     return fn(null, null);
 
   }
 
-  if (!this.cache[key]) return fn(null, null);
+
+
+
+
+  if (!this.cache[key] || (this.cache[key] < Date.now())) {
+
+    return fn(null, null);
+
+  }
 
   if (fs.existsSync(cacheFile)) {
 
@@ -140,6 +158,10 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
   process.nextTick(function tick() {
 
     self.cache[key] = data.expire;
+
+    console.log("Setting");
+
+    console.log(self.cache[key]);
 
     fn(null, val);
 
