@@ -19,13 +19,23 @@ var fs = require('fs-extra'),
 
 function FileStore() {
 
-  this.cache = {};
+  var self = this;
 
   if (!fs.existsSync(path.join(cwd, 'tmp'))) {
 
     fs.mkdirSync(path.join(cwd, 'tmp'));
 
   }
+
+  var cacheFiles = fs.readdirSync(path.join(cwd, 'tmp'));
+
+  self.cache = {};
+
+  cacheFiles.forEach(function(file) {
+
+    self.cache[file] = true;
+
+  });
 
 }
 
@@ -45,15 +55,17 @@ FileStore.prototype.get = function get(key, fn) {
 
   var cacheFile = path.join(cwd, 'tmp', key + '.json');
 
+  // if (this.cache[key] < Date.now()) {
 
+  //   return fn(null, null);
+
+  // }
 
   if (fs.existsSync(cacheFile)) {
 
-    data = require(cacheFile);
+    data = fs.readFileSync(cacheFile);
 
-
-
-    this.cache[key] = data.expire;
+    data = JSON.parse(data);
 
   } else {
 
@@ -61,21 +73,7 @@ FileStore.prototype.get = function get(key, fn) {
 
   }
 
-
-
-
-
-  if (!this.cache[key] || (this.cache[key] < Date.now())) {
-
-    return fn(null, null);
-
-  }
-
-  if (fs.existsSync(cacheFile)) {
-
-    data = require(cacheFile);
-
-  } else {
+  if (!this.cache[key]) {
 
     return fn(null, null);
 
@@ -87,7 +85,7 @@ FileStore.prototype.get = function get(key, fn) {
 
     this.del(key);
 
-    return fn();
+    return fn(null, null);
 
   }
 
@@ -141,7 +139,7 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
 
       value: JSON.stringify(val),
 
-      expire: Date.now() + ((ttl || 60) * 1000)
+      expire: JSON.stringify(Date.now() + ((ttl || 60) * 1000))
 
     };
 
@@ -158,10 +156,6 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
   process.nextTick(function tick() {
 
     self.cache[key] = data.expire;
-
-    console.log("Setting");
-
-    console.log(self.cache[key]);
 
     fn(null, val);
 
