@@ -1,6 +1,6 @@
 {
   "name": "cacheman-file",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "File caching library for Node.JS and also cache engine for cacheman",
   "author": "Taron Foxworth <taronfoxworth@gmail.com>",
   "contributors": [{
