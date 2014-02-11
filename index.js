@@ -33,6 +33,8 @@ function FileStore() {
 
   cacheFiles.forEach(function(file) {
 
+    file = file.replace('.json', '');
+
     self.cache[file] = true;
 
   });
