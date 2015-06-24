@@ -16,7 +16,8 @@ var fs = require('fs-extra'),
  * @api public
  */
 
-function FileStore() {
+function FileStore(options) {
+  options = options || {};
 
   var self = this;
   self.path = options.path || path.join(cwd, 'tmp');
