@@ -7,7 +7,7 @@
 var fs = require('fs-extra'),
   path = require('path'),
   cwd = process.cwd(),
-  noop = function() {};
+  noop = function () {};
 
 /**
  * FileStore constructor.
@@ -16,8 +16,9 @@ var fs = require('fs-extra'),
  * @api public
  */
 
-function FileStore(options) {
-  options = options || {};
+function FileStore(_options) {
+
+  var options = _options || {};
 
   var self = this;
   self.path = options.path || path.join(cwd, 'tmp');
@@ -32,7 +33,7 @@ function FileStore(options) {
 
   self.cache = {};
 
-  cacheFiles.forEach(function(file) {
+  cacheFiles.forEach(function (file) {
 
     file = file.replace('.json', '').replace('_', ':');
 
@@ -41,6 +42,7 @@ function FileStore(options) {
   });
 
 }
+
 
 /**
  * Get an entry.
