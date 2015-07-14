@@ -7,31 +7,33 @@
 var fs = require('fs-extra'),
   path = require('path'),
   cwd = process.cwd(),
-  noop = function() {};
+  noop = function () {};
 
 /**
- * RedisStore constructor.
+ * FileStore constructor.
  *
  * @param {Object} options
- * @param {Bucket} bucket
  * @api public
  */
 
-function FileStore() {
+function FileStore(_options) {
+
+  var options = _options || {};
 
   var self = this;
+  self.path = options.path || path.join(cwd, 'tmp');
 
-  if (!fs.existsSync(path.join(cwd, 'tmp'))) {
+  if (!fs.existsSync(self.path)) {
 
-    fs.mkdirSync(path.join(cwd, 'tmp'));
+    fs.mkdirSync(self.path);
 
   }
 
-  var cacheFiles = fs.readdirSync(path.join(cwd, 'tmp'));
+  var cacheFiles = fs.readdirSync(self.path);
 
   self.cache = {};
 
-  cacheFiles.forEach(function(file) {
+  cacheFiles.forEach(function (file) {
 
     file = file.replace('.json', '').replace('_', ':');
 
@@ -40,6 +42,7 @@ function FileStore() {
   });
 
 }
+
 
 /**
  * Get an entry.
@@ -51,12 +54,13 @@ function FileStore() {
 
 FileStore.prototype.get = function get(key, fn) {
 
+  var self = this;
   fn = fn || noop;
 
   var val, data;
 
   var fileKey = key.replace(':', '_');
-  var cacheFile = path.join(cwd, 'tmp', fileKey + '.json');
+  var cacheFile = path.join(this.path, fileKey + '.json');
 
   // if (this.cache[key] < Date.now()) {
 
@@ -153,7 +157,7 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
   }
 
   var fileKey = key.replace(':', '_');
-  var cacheFile = path.join(cwd, 'tmp', fileKey + '.json');
+  var cacheFile = path.join(self.path, fileKey + '.json');
 
   fs.writeFileSync(cacheFile, JSON.stringify(data, null, 4));
 
@@ -182,7 +186,7 @@ FileStore.prototype.del = function del(key, fn) {
   fn = fn || noop;
 
   var fileKey = key.replace(':', '_');
-  var cacheFile = path.join(cwd, 'tmp', fileKey + '.json');
+  var cacheFile = path.join(self.path, fileKey + '.json');
 
   if (!fs.existsSync(cacheFile)) {
 
@@ -237,9 +241,9 @@ FileStore.prototype.clear = function clear(key, fn) {
   try {
 
     // Delete tmp folder
-    fs.removeSync(path.join(cwd, 'tmp'));
+    fs.removeSync(self.path);
     // Recreate empty folder
-    fs.mkdirSync(path.join(cwd, 'tmp'));
+    fs.mkdirSync(self.path);
 
   } catch (e) {
 
