@@ -28,9 +28,6 @@
     "cacheman"
   ],
   "license": "MIT",
-  "dependencies": {
-    "fs-extra": "~0.24.0"
-  },
   "devDependencies": {
     "@modulus/standard": "~0.1.1",
     "code": "~1.5.0",
