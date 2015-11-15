@@ -1,11 +1,13 @@
-var assert = require('assert'),
-  Cache = require('../'),
-  cache;
+var assert = require('assert');
+var Path = require('path');
+var Fs = require('fs-extra');
+var Cache = require('../');
+var cache;
 
 describe('cacheman-file', function() {
 
   before(function(done) {
-    cache = new Cache({}, {});
+    cache = new Cache({tmpDir: Path.join(process.cwd(), 'temp')}, {});
     done();
   });
 
@@ -19,6 +21,13 @@ describe('cacheman-file', function() {
     assert.ok(cache.get);
     assert.ok(cache.del);
     assert.ok(cache.clear);
+  });
+
+  it('should set temp directory from options', function (done) {
+    Fs.ensureDir(Path.join(process.cwd(), 'temp'), function(err, results) {
+      assert.strictEqual(err, null);
+      done();
+    });
   });
 
   it('should store items', function(done) {
