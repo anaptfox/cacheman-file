@@ -1,264 +1,163 @@
-'use strict';
+const Fs = require('fs-extra');
+const Path = require('path');
+const Noop = function() {};
 
 /**
- * Module dependencies.
- */
-
-var fs = require('fs-extra'),
-  path = require('path'),
-  cwd = process.cwd(),
-  noop = function() {};
-
-/**
- * RedisStore constructor.
- *
+ * FileStore constructor
  * @param {Object} options
- * @param {Bucket} bucket
+ * @param {String} options.tmpDir
  * @api public
  */
-
-function FileStore() {
-
+function FileStore(options) {
   var self = this;
+  self.tmpDir = options.tmpDir || Path.join(process.cwd(), 'tmp');
 
-  if (!fs.existsSync(path.join(cwd, 'tmp'))) {
+  if (!Fs.existsSync(self.tmpDir)) Fs.mkdirSync(self.tmpDir);
 
-    fs.mkdirSync(path.join(cwd, 'tmp'));
-
-  }
-
-  var cacheFiles = fs.readdirSync(path.join(cwd, 'tmp'));
-
+  var cacheFiles = Fs.readdirSync(self.tmpDir);
   self.cache = {};
-
   cacheFiles.forEach(function(file) {
-
     file = file.replace('.json', '').replace('_', ':');
-
     self.cache[file] = true;
-
   });
-
 }
 
 /**
- * Get an entry.
- *
+ * Get entry
  * @param {String} key
  * @param {Function} fn
  * @api public
  */
-
 FileStore.prototype.get = function get(key, fn) {
-
-  fn = fn || noop;
-
-  var val, data;
-
+  var self = this;
+  var val = null;
+  var data = null;
   var fileKey = key.replace(':', '_');
-  var cacheFile = path.join(cwd, 'tmp', fileKey + '.json');
+  var cacheFile = Path.join(self.tmpDir, fileKey + '.json');
 
-  // if (this.cache[key] < Date.now()) {
+  fn = fn || Noop;
 
-  //   return fn(null, null);
-
-  // }
-
-  if (fs.existsSync(cacheFile)) {
-
-    data = fs.readFileSync(cacheFile);
-
+  if (Fs.existsSync(cacheFile)) {
+    data = Fs.readFileSync(cacheFile);
     data = JSON.parse(data);
-
   } else {
-
     return fn(null, null);
-
   }
 
   if (!this.cache[key]) {
-
     return fn(null, null);
-
   }
 
   if (!data) return fn(null, data);
-
   if (data.expire < Date.now()) {
-
     this.del(key);
-
     return fn(null, null);
-
   }
 
   try {
-
     val = JSON.parse(data.value);
-
   } catch (e) {
-
     return fn(e);
-
   }
 
   process.nextTick(function tick() {
-
     fn(null, val);
-
   });
-
 };
 
 /**
  * Set an entry.
- *
  * @param {String} key
  * @param {Mixed} val
  * @param {Number} ttl
  * @param {Function} fn
  * @api public
  */
-
 FileStore.prototype.set = function set(key, val, ttl, fn) {
-
   var data, self = this;
 
-  if ('function' === typeof ttl) {
-
-    fn = ttl;
-
-    ttl = null;
-
-  }
-
-  fn = fn || noop;
-
-  if ('undefined' === typeof val) return fn();
+  if (typeof val === 'undefined' || null) return fn(new Error('val not set'));
+  if (typeof ttl === 'function') fn = ttl;
+  fn = fn || Noop;
+  ttl = ttl * 1000 || 60 * 1000;
 
   try {
-
     data = {
-
       value: JSON.stringify(val),
-
-      expire: JSON.stringify(Date.now() + ((ttl || 60) * 1000))
-
+      expire: JSON.stringify(Date.now() + ttl)
     };
-
   } catch (e) {
-
     return fn(e);
-
   }
 
   var fileKey = key.replace(':', '_');
-  var cacheFile = path.join(cwd, 'tmp', fileKey + '.json');
+  var cacheFile = Path.join(self.tmpDir, fileKey + '.json');
 
-  fs.writeFileSync(cacheFile, JSON.stringify(data, null, 4));
+  Fs.writeFileSync(cacheFile, JSON.stringify(data, null, 4));
 
   process.nextTick(function tick() {
-
     self.cache[key] = data.expire;
-
     fn(null, val);
-
   });
-
 };
 
 /**
  * Delete an entry.
- *
  * @param {String} key
  * @param {Function} fn
  * @api public
  */
-
 FileStore.prototype.del = function del(key, fn) {
-
   var self = this;
-
-  fn = fn || noop;
-
   var fileKey = key.replace(':', '_');
-  var cacheFile = path.join(cwd, 'tmp', fileKey + '.json');
+  var cacheFile = Path.join(self.tmpDir, fileKey + '.json');
 
-  if (!fs.existsSync(cacheFile)) {
+  fn = fn || Noop;
 
+  if (!Fs.existsSync(cacheFile)) {
     self.cache[key] = null;
-
     return fn();
-
   }
 
   try {
-
-    fs.removeSync(cacheFile);
-
+    Fs.removeSync(cacheFile);
   } catch (e) {
-
     return fn(e);
-
   }
 
   process.nextTick(function tick() {
-
     self.cache[key] = null;
-
     fn(null);
-
   });
-
 };
 
 /**
- * Clear all entries for this bucket.
- *
+ * Clear all cached files
  * @param {String} key
  * @param {Function} fn
  * @api public
  */
-
 FileStore.prototype.clear = function clear(key, fn) {
-
   var self = this;
 
   if ('function' === typeof key) {
-
     fn = key;
-
     key = null;
-
   }
 
-  fn = fn || noop;
+  fn = fn || Noop;
 
   try {
-
-    // Delete tmp folder
-    fs.removeSync(path.join(cwd, 'tmp'));
-    // Recreate empty folder
-    fs.mkdirSync(path.join(cwd, 'tmp'));
-
+    Fs.removeSync(self.tmpDir);
+    Fs.mkdirSync(self.tmpDir);
   } catch (e) {
-
     return fn(e);
-
   }
 
   process.nextTick(function tick() {
-
     self.cache = {};
-
     fn(null);
-
   });
-
 };
-
-/**
- * Export `FileStore`.
- */
 
 module.exports = FileStore;
