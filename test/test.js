@@ -76,6 +76,19 @@ describe('cacheman-file', function() {
     });
   });
 
+  it('should sanitize key', function(done) {
+    cache.set('/path/to/url/?param=123', {
+      a: 1
+    }, function(err) {
+      if (err) return done(err);
+      cache.get('/path/to/url/?param=123', function(err, data) {
+        if (err) return done(err);
+        assert.equal(data.a, 1);
+        done();
+      });
+    });
+  });
+
   it('should delete items', function(done) {
     var value = Date.now();
     cache.set('test5', value, function(err) {
