@@ -21,6 +21,7 @@ describe('cacheman-file', function() {
     assert.ok(cache.get);
     assert.ok(cache.del);
     assert.ok(cache.clear);
+    assert.ok(cache.getAll);
   });
 
   it('should set temp directory from options', function (done) {
@@ -131,7 +132,6 @@ describe('cacheman-file', function() {
   });
 
   it('should get entire cache', function (done) {
-    var key;
     var items = [
       { a: 'test1' },
       { a: 'test2' },
