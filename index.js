@@ -33,7 +33,8 @@ FileStore.prototype.get = function get(key, fn) {
   var self = this;
   var val = null;
   var data = null;
-  var cacheFile = Path.join(self.tmpDir, sanitize(key) + '.json');
+  key = sanitize(key);
+  var cacheFile = Path.join(self.tmpDir, key + '.json');
 
   fn = fn || Noop;
 
@@ -44,13 +45,13 @@ FileStore.prototype.get = function get(key, fn) {
     return fn(null, null);
   }
 
-  if (!this.cache[sanitize(key)]) {
+  if (!this.cache[key]) {
     return fn(null, null);
   }
 
   if (!data) return fn(null, data);
   if (data.expire < Date.now()) {
-    this.del(sanitize(key));
+    this.del(key);
     return fn(null, null);
   }
 
@@ -90,12 +91,13 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
     return fn(e);
   }
 
-  var cacheFile = Path.join(self.tmpDir, sanitize(key) + '.json');
+  key = sanitize(key);
+  var cacheFile = Path.join(self.tmpDir, key + '.json');
 
   Fs.writeFileSync(cacheFile, JSON.stringify(data, null, 4));
 
   process.nextTick(function tick() {
-    self.cache[sanitize(key)] = data.expire;
+    self.cache[key] = data.expire;
     fn(null, val);
   });
 };
@@ -108,12 +110,13 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
  */
 FileStore.prototype.del = function del(key, fn) {
   var self = this;
-  var cacheFile = Path.join(self.tmpDir, sanitize(key) + '.json');
+  key = sanitize(key);
+  var cacheFile = Path.join(self.tmpDir, key + '.json');
 
   fn = fn || Noop;
 
   if (!Fs.existsSync(cacheFile)) {
-    self.cache[sanitize(key)] = null;
+    self.cache[key] = null;
     return fn();
   }
 
@@ -124,7 +127,7 @@ FileStore.prototype.del = function del(key, fn) {
   }
 
   process.nextTick(function tick() {
-    self.cache[sanitize(key)] = null;
+    self.cache[key] = null;
     fn(null);
   });
 };
