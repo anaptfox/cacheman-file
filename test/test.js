@@ -21,6 +21,7 @@ describe('cacheman-file', function() {
     assert.ok(cache.get);
     assert.ok(cache.del);
     assert.ok(cache.clear);
+    assert.ok(cache.getAll);
   });
 
   it('should set temp directory from options', function (done) {
@@ -130,4 +131,27 @@ describe('cacheman-file', function() {
     });
   });
 
+  it('should get entire cache', function (done) {
+    var items = [
+      { a: 'test1' },
+      { a: 'test2' },
+      { a: 'test3' }
+    ];
+
+    cache.set('test1', items[0], function (err) {
+      assert.deepEqual(null, err);
+      cache.set('test2', items[1], function (err) {
+        assert.deepEqual(null, err);
+        cache.set('test3', items[2], function (err) {
+          assert.deepEqual(null, err);
+
+          cache.getAll(function (err, results) {
+            assert.deepEqual(null, err);
+            assert.deepEqual(items, results);
+            done();
+          });
+        });
+      });
+    });
+  });
 });

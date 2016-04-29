@@ -160,4 +160,24 @@ FileStore.prototype.clear = function clear(key, fn) {
   });
 };
 
+/**
+ * Get all cached entries
+ * @param {Function} fn
+ */
+FileStore.prototype.getAll = function (fn) {
+  var self = this;
+  var entries = [], cache = self.cache;
+
+  Object.keys(cache).forEach(function (entry) {
+    self.get(entry, function (err, result) {
+      if (err) return fn(err);
+      entries.push(result);
+    });
+  });
+
+  process.nextTick(function () {
+    fn(null, entries);
+  });
+};
+
 module.exports = FileStore;
