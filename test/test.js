@@ -1,6 +1,7 @@
 var assert = require('assert');
 var Path = require('path');
 var Fs = require('fs-extra');
+var sanitize = require('sanitize-filename');
 var Cache = require('../');
 var cache;
 
@@ -72,6 +73,27 @@ describe('cacheman-file', function() {
       cache.get('test4', function(err, data) {
         if (err) return done(err);
         assert.strictEqual(data, null);
+        done();
+      });
+    });
+  });
+
+  it('should allow special characters on keys', function(done) {
+    var key = '/path/to/url/?param=123';
+    cache.set(key, {
+      a: 1
+    }, function(err) {
+      if (err) return done(err);
+
+      // compare cached key against sanitized key
+      var lastKey = Object.keys(cache.cache).pop();
+      var sanitizedKey = sanitize(key);
+      assert.equal(sanitizedKey, lastKey);
+
+      // check functionality, along the way
+      cache.get(key, function(err, data) {
+        if (err) return done(err);
+        assert.equal(data.a, 1);
         done();
       });
     });

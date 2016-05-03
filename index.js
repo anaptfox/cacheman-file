@@ -1,4 +1,5 @@
 const Fs = require('fs-extra');
+const sanitize = require('sanitize-filename');
 const Path = require('path');
 const Noop = function() {};
 
@@ -17,7 +18,7 @@ function FileStore(options) {
   var cacheFiles = Fs.readdirSync(self.tmpDir);
   self.cache = {};
   cacheFiles.forEach(function(file) {
-    file = file.replace('.json', '').replace('_', ':');
+    file = file.replace('.json', '');
     self.cache[file] = true;
   });
 }
@@ -32,8 +33,8 @@ FileStore.prototype.get = function get(key, fn) {
   var self = this;
   var val = null;
   var data = null;
-  var fileKey = key.replace(':', '_');
-  var cacheFile = Path.join(self.tmpDir, fileKey + '.json');
+  key = sanitize(key);
+  var cacheFile = Path.join(self.tmpDir, key + '.json');
 
   fn = fn || Noop;
 
@@ -90,8 +91,8 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
     return fn(e);
   }
 
-  var fileKey = key.replace(':', '_');
-  var cacheFile = Path.join(self.tmpDir, fileKey + '.json');
+  key = sanitize(key);
+  var cacheFile = Path.join(self.tmpDir, key + '.json');
 
   Fs.writeFileSync(cacheFile, JSON.stringify(data, null, 4));
 
@@ -109,8 +110,8 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
  */
 FileStore.prototype.del = function del(key, fn) {
   var self = this;
-  var fileKey = key.replace(':', '_');
-  var cacheFile = Path.join(self.tmpDir, fileKey + '.json');
+  key = sanitize(key);
+  var cacheFile = Path.join(self.tmpDir, key + '.json');
 
   fn = fn || Noop;
 
