@@ -169,10 +169,10 @@ FileStore.prototype.getAll = function (fn) {
   var self = this;
   var entries = [], cache = self.cache;
 
-  Object.keys(cache).forEach(function (entry) {
-    self.get(entry, function (err, result) {
+  Object.keys(cache).forEach(function (key) {
+    self.get(key, function (err, data) {
       if (err) return fn(err);
-      entries.push(result);
+      entries.push({ key: key, data: data });
     });
   });
 
