@@ -154,22 +154,31 @@ describe('cacheman-file', function() {
   });
 
   it('should get entire cache', function (done) {
-    var items = [
-      { a: 'test1' },
-      { a: 'test2' },
-      { a: 'test3' }
+    var entries, items = [
+      { key: 'test0', data: { a: 'test0' } },
+      { key: 'test1', data: { a: 'test1' } },
+      { key: 'test2', data: { a: 'test2' } }
     ];
 
-    cache.set('test1', items[0], function (err) {
+    function compare(a, b) {
+      if (a.key < b.key) return -1;
+      else if (a.key > b.key) return 1;
+      else return 0;
+    }
+
+    cache.set(items[0].key, items[0].data, function (err) {
       assert.deepEqual(null, err);
-      cache.set('test2', items[1], function (err) {
+
+      cache.set(items[1].key, items[1].data, function (err) {
         assert.deepEqual(null, err);
-        cache.set('test3', items[2], function (err) {
+
+        cache.set(items[2].key, items[2].data, function (err) {
           assert.deepEqual(null, err);
 
           cache.getAll(function (err, results) {
             assert.deepEqual(null, err);
-            assert.deepEqual(items, results);
+            entries = results.sort(compare);
+            assert.deepEqual(items, entries);
             done();
           });
         });
