@@ -112,7 +112,7 @@ Get all entries in the cache. Entries are returned as an array
 ```javascript
 cache.set('foo', { a: 'bar' }, 10, function (err, result) {
   cache.getAll(function (err, results) {
-    console.log(results) // [ { a: 'bar' } ]
+    console.log(results) // [ { key: 'foo', data: { a: 'bar' } } ]
   });
 });
 ```
