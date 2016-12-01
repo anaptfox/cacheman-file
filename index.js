@@ -45,21 +45,13 @@ FileStore.prototype.get = function get(key, fn) {
     return fn(null, null);
   }
 
-  if (!this.cache[key]) {
-    return fn(null, null);
-  }
-
   if (!data) return fn(null, data);
   if (data.expire < Date.now()) {
     this.del(key);
     return fn(null, null);
   }
 
-  try {
-    val = JSON.parse(data.value);
-  } catch (e) {
-    return fn(e);
-  }
+  val = data.value;
 
   process.nextTick(function tick() {
     fn(null, val);
