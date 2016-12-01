@@ -51,7 +51,11 @@ FileStore.prototype.get = function get(key, fn) {
     return fn(null, null);
   }
 
-  val = data.value;
+  try {
+    val = JSON.parse(data.value);
+  } catch (e) {
+    return fn(e);
+  }
 
   process.nextTick(function tick() {
     fn(null, val);
