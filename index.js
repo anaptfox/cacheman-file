@@ -18,7 +18,7 @@ function FileStore(options) {
   var cacheFiles = Fs.readdirSync(self.tmpDir);
   self.cache = {};
   cacheFiles.forEach(function(file) {
-    file = file.replace('.json', '');
+    file = file.replace(/\.json$/, '');
     self.cache[file] = true;
   });
 }
@@ -42,6 +42,10 @@ FileStore.prototype.get = function get(key, fn) {
     data = Fs.readFileSync(cacheFile);
     data = JSON.parse(data);
   } else {
+    return fn(null, null);
+  }
+
+  if (!this.cache[key]) {
     return fn(null, null);
   }
 
