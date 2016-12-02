@@ -2,3 +2,5 @@ node_modules/
 tmp
 temp/
 *.tgz
+.idea
+*.iml

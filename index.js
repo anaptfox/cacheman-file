@@ -18,7 +18,7 @@ function FileStore(options) {
   var cacheFiles = Fs.readdirSync(self.tmpDir);
   self.cache = {};
   cacheFiles.forEach(function(file) {
-    file = file.replace('.json', '');
+    file = file.replace(/\.json$/, '');
     self.cache[file] = true;
   });
 }
