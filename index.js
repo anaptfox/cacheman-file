@@ -41,6 +41,7 @@ FileStore.prototype.get = function get(key, fn) {
   if (Fs.existsSync(cacheFile)) {
     data = Fs.readFileSync(cacheFile);
     data = JSON.parse(data);
+    self.cache[key] = data.expire; //ensures cache sync in all clusters.
   } else {
     return fn(null, null);
   }
