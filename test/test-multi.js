@@ -43,7 +43,6 @@ describe('cacheman-file-multi', function() {
         return done(err);
       assert.equal(data.a, 1);
       cache2.get('test1', function(err, data) {
-        console.log(data);
         if (err)
           return done(err);
         try {
