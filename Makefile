@@ -1,7 +1,7 @@
 REPORTER = spec
 
 test:
-	@./node_modules/.bin/mocha \
+	@/usr/bin/mocha \
 		--reporter $(REPORTER) \
 		--bail
 
