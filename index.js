@@ -41,13 +41,14 @@ FileStore.prototype.get = function get(key, fn) {
   if (Fs.existsSync(cacheFile)) {
     data = Fs.readFileSync(cacheFile);
     data = JSON.parse(data);
+    this.cache[key] = data.expire;	// added by MTP LLP - without this the cache is not persistent
   } else {
     return fn(null, null);
   }
 
-  if (!this.cache[key]) {
+  /*if (!this.cache[key]) {			// redundant test for a disk cache - could be removed
     return fn(null, null);
-  }
+  }*/
 
   if (!data) return fn(null, data);
   if (data.expire < Date.now()) {
