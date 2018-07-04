@@ -85,7 +85,7 @@ FileStore.prototype.set = function set(key, val, ttl, fn) {
   try {
     data = {
       value: JSON.stringify(val),
-      expire: JSON.stringify(Date.now() + ttl)
+      expire: Date.now() + ttl
     };
   } catch (e) {
     return fn(e);
